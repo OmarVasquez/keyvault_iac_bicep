@@ -55,6 +55,8 @@ module keyVault './resources/keyvault.bicep' = {
     sku: keyVaultParams.sku
     subnetId: subnetIdPrivateEndpoints
     secrets: keyVaultSecrets
+    vNetName: vnetName
+
   }
 }
 
@@ -74,6 +76,7 @@ module appService './resources/appservice.bicep' = {
     subnetIdPrivateEndpoint: subnetIdPrivateEndpoints
     identity: managedIdentityNameAppService
     subnetIdVnetIntegration: subnetIdAppServiceVNetIntegration
+    vNetName: vnetName
   }
 }
 

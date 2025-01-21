@@ -8,6 +8,7 @@ param secrets array
 param keyVaultName string
 param subnetIdPrivateEndpoint string
 param subnetIdVnetIntegration string
+param vNetName string
 
 
 resource appServiceIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
@@ -60,6 +61,22 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azurewebsites.net'
   location: 'global'
   properties: {}
+}
+
+resource vNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
+  name: vNetName
+}
+
+resource privateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZone
+  name: 'link-${ toLower(vNetName) }'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vNet.id
+    }
+  }
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = {

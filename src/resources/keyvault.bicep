@@ -3,6 +3,7 @@ param vaultName string
 param sku string = 'standard'
 param subnetId string
 param secrets array
+param vNetName string
 
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
@@ -25,7 +26,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
-  name: 'privatelink.vault.azure.net'
+  name: 'privatelink.vaultcore.azure.net'
   location: 'global'
   properties: {}
 }
@@ -66,6 +67,22 @@ resource privateDnsZoneLink 'Microsoft.Network/privateEndpoints/privateDnsZoneGr
         }
       }
     ]
+  }
+}
+
+resource vNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = {
+  name: vNetName
+}
+
+resource privateDnsZoneVirtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZone
+  name: 'link-${ toLower(vNetName)}'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vNet.id
+    }
   }
 }
 
