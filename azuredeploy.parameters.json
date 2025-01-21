@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "dev",
+      "type": "string"
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "vnet-demo",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetPrefixs": {
+          "snetDefault": "10.0.0.0/25",
+          "snetPrivateEndpoints": "10.0.0.128/27",
+          "snetApp01": "10.0.0.160/27",
+          "snetAksNodes": "10.0.0.192/27",
+          "snetAksPods": "10.0.1.0/25",
+          "snetAgw": "10.0.1.128/27"
+        }
+      }
+    },
+    "keyVaultParams": {
+      "value": {
+        "name": "kv-demo",
+        "sku": "standard"
+      },
+      "type": "object"
+    },
+    "keyVaultSecrets": {
+      "value": [
+        {
+          "name": "secret1",
+          "value": "secret1value"
+        },
+        {
+          "name": "secret2",
+          "value": "secret2value"
+        }
+      ]
+
+    },
+    "appServiceParams": {
+      "value": {
+        "name": "app-demo",
+        "plan": "asp-demo",
+        "sku": "P0v3",
+        "runtimeStack": "PYTHON|3.12",
+        "identity": "id-app-demo",
+        "secrets": [
+          "secret1",
+          "secret2"
+        ]
+      }
+    },
+    "privateEndpointParams": {
+      "value": {
+        "resourceGroup": "rg-bancolombia-demo-dev-westus-01",
+        "vNet": "vnet-demo-dev-westus-01",
+        "subnet": "snet-private-endpoints"
+      }
+    },
+    "containerRegistryParams": {
+      "value": {
+        "name": "crdemo",
+        "sku": "Premium"
+      }
+    },
+     "applicationGatewayParams": {
+      "value": {
+        "name": "agw-demo",
+        "sku": "Standard_v2",
+        "identity": "id-agw-demo",
+        "publicIp": "pip-agw-demo"
+      }
+    },
+    "aksParams": {
+      "value": {
+        "clusterName": "aks-demo",
+        "identity": "id-aks-demo",
+        "nodeCountSystem": 1,
+        "nodeCountUser": 1,
+        "kubernetesVersion": "1.30.7",
+        "vmSizeNodeSystem": "Standard_D2s_v3",
+        "vmSizeNodeUser": "Standard_D2s_v3",
+        "sku": "Free"
+      }
+    }
+   
+    
+    // "roleAssignment": {
+    //   "value": {
+    //     "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+    //     "principalId": "<appServicePrincipalId>"
+    //   }
+    // }
+  }
+}
